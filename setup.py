@@ -28,7 +28,10 @@ def read(fname):
     return content
 
 
-core_dependencies = []
+core_dependencies = [
+    'fastapi_auth0',
+    'tendril-config',
+]
 
 install_requires = core_dependencies + ['wheel']
 

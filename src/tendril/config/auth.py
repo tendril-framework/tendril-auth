@@ -9,13 +9,24 @@ depends = ['tendril.config.core']
 
 config_elements_auth = [
     ConfigOption(
-        'AUTH_SECRET_KEY',
-        "None",
-        "A secret key to be used for user authentication. Ideally, this should "
-        "be provided as an environment variable in the authenticating host or "
-        "something of the sort. At present, it should be atleast stored in the "
-        "local config instead of the instance config."
+        'AUTH_PROVIDER',
+        "auth0",
+        "Auth Provider"
     ),
+]
+
+
+config_elements_auth0 = [
+    ConfigOption(
+        'AUTH0_DOMAIN',
+        "None",
+        "Auth0 Domain"
+    ),
+    ConfigOption(
+        'AUTH0_AUDIENCE',
+        "None",
+        "Auth0 Audience"
+    )
 ]
 
 
@@ -23,3 +34,7 @@ def load(manager):
     logger.debug("Loading {0}".format(__name__))
     manager.load_elements(config_elements_auth,
                           doc="Authentication Configuration")
+    if manager.AUTH_PROVIDER == "auth0":
+        manager.load_elements(config_elements_auth0,
+                              doc="Auth0 Configuration")
+
