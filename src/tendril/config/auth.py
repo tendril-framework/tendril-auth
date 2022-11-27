@@ -10,7 +10,7 @@ depends = ['tendril.config.core']
 config_elements_auth = [
     ConfigOption(
         'AUTH_PROVIDER',
-        "auth0",
+        "'auth0'",
         "Auth Provider"
     ),
 ]

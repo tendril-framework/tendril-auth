@@ -29,6 +29,7 @@ def read(fname):
 
 
 core_dependencies = [
+    'fastapi',
     'fastapi_auth0',
     'tendril-config',
 ]

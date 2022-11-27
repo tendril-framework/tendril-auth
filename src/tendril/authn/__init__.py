@@ -7,7 +7,10 @@ logger = log.get_logger(__name__, log.DEBUG)
 
 if AUTH_PROVIDER == "auth0":
     logger.info("Using the auth0 auth provider")
-    import auth0 as AuthProvider
+    from . import auth0 as AuthProvider
+else:
+    raise ImportError("AUTH_PROVIDER {} not recognized".format(AUTH_PROVIDER))
+
 
 authn_dependency = AuthProvider.authn_dependency
 AuthUserModel = AuthProvider.AuthUserModel
