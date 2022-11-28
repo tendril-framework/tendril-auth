@@ -15,3 +15,4 @@ else:
 authn_dependency = AuthProvider.authn_dependency
 AuthUserModel = AuthProvider.AuthUserModel
 auth_spec = AuthProvider.auth_spec
+get_user_profile = AuthUserModel.get_user_profile

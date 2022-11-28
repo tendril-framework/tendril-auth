@@ -33,3 +33,7 @@ def auth_spec(scopes=None):
     if scopes:
         kwargs['scopes'] = scopes
     return Security(auth.get_user, **kwargs)
+
+
+def get_user_profile(user: AuthUserModel):
+    return {}

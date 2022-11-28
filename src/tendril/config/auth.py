@@ -31,6 +31,18 @@ config_elements_auth0 = [
         'AUTH0_NAMESPACE',
         "'https://tendril.link/schema/auth0'",
         "Auth0 Namespace for Token Contents"
+    ),
+    ConfigOption(
+        'AUTH0_USER_MANAGEMENT_API_CLIENTID',
+        "None",
+        "Client ID for interaction with the Auth0 Management API. "
+        "Required for User database integration."
+    ),
+    ConfigOption(
+        'AUTH0_USER_MANAGEMENT_API_CLIENTSECRET',
+        "None",
+        "Client Secret for interaction with the Auth0 Management API. "
+        "Required for User database integration."
     )
 ]
 
