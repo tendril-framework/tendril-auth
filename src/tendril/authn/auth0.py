@@ -34,7 +34,7 @@ auth = Auth0(domain=AUTH0_DOMAIN,
 authn_dependency = auth.implicit_scheme
 AuthUserModel = Auth0User
 
-mgmt_api_token = None
+management_api_token = None
 
 
 def auth_spec(scopes=None):
