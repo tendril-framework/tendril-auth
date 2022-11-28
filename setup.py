@@ -32,6 +32,7 @@ core_dependencies = [
     'fastapi',
     'fastapi_auth0',
     'tendril-config',
+    'auth0-python',
 ]
 
 install_requires = core_dependencies + ['wheel']
