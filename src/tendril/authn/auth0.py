@@ -55,7 +55,7 @@ def get_management_api_token():
                                          AUTH0_USER_MANAGEMENT_API_CLIENTSECRET,
                                          'https://{}/api/v2/'.format(AUTH0_DOMAIN))
     management_api_token = token['access_token']
-    logger.debug("Successfully received Management API token ending in {}".format(management_api_token[-5:]))
+    logger.info("Successfully received Management API token ending in {}".format(management_api_token[-5:]))
 
 
 def _get_user_profile(user: AuthUserModel):
