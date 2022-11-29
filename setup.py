@@ -32,6 +32,7 @@ core_dependencies = [
     'fastapi',
     'fastapi_auth0',
     'tendril-config',
+    'tendril-caching',
     'auth0-python',
 ]
 
