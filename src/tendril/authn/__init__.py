@@ -1,6 +1,10 @@
 
 
 from tendril.config import AUTH_PROVIDER
+
+from db.controller import register_provider
+from db.controller import register_user
+
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEBUG)
 
@@ -8,6 +12,7 @@ logger = log.get_logger(__name__, log.DEBUG)
 if AUTH_PROVIDER == "auth0":
     logger.info("Using the auth0 auth provider")
     from . import auth0 as AuthProvider
+    provider_name = 'auth0'
 else:
     raise ImportError("AUTH_PROVIDER {} not recognized".format(AUTH_PROVIDER))
 
@@ -15,4 +20,14 @@ else:
 authn_dependency = AuthProvider.authn_dependency
 AuthUserModel = AuthProvider.AuthUserModel
 auth_spec = AuthProvider.auth_spec
-get_user_profile = AuthUserModel.get_user_profile
+get_user_profile = AuthProvider.get_user_profile
+
+
+def verify_user_registration(user):
+    register_user(user.id, provider_name)
+
+
+def _init():
+    register_provider(provider_name)
+
+_init()
