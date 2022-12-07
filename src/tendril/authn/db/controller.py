@@ -22,7 +22,8 @@ def get_user(uid, session=None):
 
 @with_db
 def get_provider(name, session=None):
-    pass
+    q = session.query(Provider).filter_by(name=name)
+    return q.one()
 
 
 @with_db
@@ -31,8 +32,7 @@ def register_provider(name, must_create=False, session=None):
         raise AttributeError("name cannot be None")
 
     try:
-        q = session.query(Provider).filter_by(name=name)
-        existing = q.one()
+        existing = get_provider(name)
     except NoResultFound:
         provider = Provider(name=name)
     else:
@@ -60,11 +60,15 @@ def register_user(puid, provider, must_create=False, session=None):
         )
         existing = q.one()
     except NoResultFound:
+        logger.info("Registering user '{}' from provider '{}'"
+                    "".format(puid, provider.name))
         user = User(puid=puid, provider=provider, provider_id=provider.id)
     else:
         if must_create:
             raise ValueError("User Already Exists")
         else:
+            logger.info("Using existing user '{}' for {} user '{}'"
+                        "".format(existing.id, provider.name, puid))
             user = existing
     session.add(user)
     return user
