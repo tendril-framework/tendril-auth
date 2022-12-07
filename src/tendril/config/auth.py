@@ -43,6 +43,13 @@ config_elements_auth0 = [
         "None",
         "Client Secret for interaction with the Auth0 Management API. "
         "Required for User database integration."
+    ),
+    ConfigOption(
+        'AUTH0_USERINFO_CACHING',
+        "None",
+        "Whether to cache userinfo acquired from the management API. "
+        "Set to 'platform' for using platform-level caching, using redis. "
+        "Other options not presently implemented."
     )
 ]
 

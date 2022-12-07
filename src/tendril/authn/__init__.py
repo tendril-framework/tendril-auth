@@ -22,7 +22,6 @@ AuthUserModel = AuthProvider.AuthUserModel
 auth_spec = AuthProvider.auth_spec
 get_user_profile = AuthProvider.get_user_profile
 
-
 def verify_user_registration(user):
     register_user(user.id, provider_name)
 
