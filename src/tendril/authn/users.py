@@ -34,6 +34,7 @@ def verify_user_registration(user):
 
 
 def init():
+    AuthProvider.init()
     register_provider(provider_name)
 
 

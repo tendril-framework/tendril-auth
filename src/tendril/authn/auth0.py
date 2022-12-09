@@ -19,6 +19,8 @@ from tendril.config import AUTH0_AUDIENCE
 from tendril.config import AUTH0_USER_MANAGEMENT_API_CLIENTID
 from tendril.config import AUTH0_USER_MANAGEMENT_API_CLIENTSECRET
 from tendril.config import AUTH0_USERINFO_CACHING
+from tendril.config import AUTH0_M2M_CLIENTS
+
 
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEBUG)
@@ -82,12 +84,17 @@ def _get_user_profile(user: AuthUserModel):
     return user_profile
 
 
+_m2m_clients = {}
+
+
 def _key_func(user: AuthUserModel):
     return user.id
 
 
 @cache(namespace='userinfo', ttl=86400, key=_key_func)
 def get_user_profile(user: AuthUserModel):
+    if user.id in _m2m_clients.keys():
+        return _m2m_clients[user.id]
     global management_api_token
     if management_api_token is None:
         get_management_api_token()
@@ -97,5 +104,13 @@ def get_user_profile(user: AuthUserModel):
         if error.status_code == 401:
             get_management_api_token()
             return _get_user_profile(user)
+        if error.status_code == 400:
+            # this may be an M2M client
+            raise
         else:
             raise
+
+
+def init():
+    global _m2m_clients
+    _m2m_clients = AUTH0_M2M_CLIENTS
