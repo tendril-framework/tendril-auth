@@ -14,4 +14,4 @@ class UserMixin(object):
 
     @declared_attr
     def user(cls):
-        return relationship("User", back_populates="user")
+        return relationship("User")
