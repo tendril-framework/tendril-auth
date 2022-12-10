@@ -16,8 +16,11 @@ def get_users(session=None):
 
 
 @with_db
-def get_user(uid, session=None):
-    pass
+def get_user(puid, provider=None, session=None):
+    q = session.query(User).filter_by(puid=puid)
+    if provider:
+        q.filter_by(provider=provider)
+    return q.one()
 
 
 @with_db
@@ -72,3 +75,20 @@ def register_user(puid, provider, must_create=False, session=None):
             user = existing
     session.add(user)
     return user
+
+
+@with_db
+def preprocess_user(user, provider=None, session=None):
+    if user is None:
+        raise AttributeError("user cannot be None")
+    if isinstance(user, int):
+        user_id = user
+    elif isinstance(user, User):
+        user_id = user.id
+    else:
+        try:
+            user = get_user(user, provider, session=session)
+            user_id = user.id
+        except NoResultFound:
+            raise AttributeError(f"User {user} does not seem to exist.")
+    return user_id
