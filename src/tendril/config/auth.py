@@ -53,7 +53,7 @@ config_elements_auth0 = [
     ),
     ConfigOption(
         'AUTH0_M2M_CLIENTS',
-        '{}}',
+        '{}',
         "A dictionary of M2M clients which are allowed to access this instance. "
         "This needs to be specified here to prevent an attempt to get the "
         "User Profile from Auth0, which would fail. Use of the management "
