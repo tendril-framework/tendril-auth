@@ -75,40 +75,51 @@ def get_management_api_token():
     logger.info("Successfully received Management API token ending in {}".format(management_api_token[-5:]))
 
 
-def _get_user_profile(user: AuthUserModel):
+def _get_user_profile(user_id):
     global management_api_token
-    logger.debug("Attempting to fetch user information for {} from Auth0".format(user.id))
+    logger.debug("Attempting to fetch user information for {} from Auth0".format(user_id))
     auth0 = Auth0PythonClient(AUTH0_DOMAIN, management_api_token)
-    user_profile = auth0.users.get(user.id)
-    logger.info("Got user details for {} from Auth0 Management API".format(user.id))
+    user_profile = auth0.users.get(user_id)
+    logger.info("Got user details for {} from Auth0 Management API".format(user_id))
     return user_profile
 
 
 _m2m_clients = {}
 
 
-def _key_func(user: AuthUserModel):
-    return user.id
+def _key_func(user_id):
+    return user_id
 
 
 @cache(namespace='userinfo', ttl=86400, key=_key_func)
-def get_user_profile(user: AuthUserModel):
-    if user.id in _m2m_clients.keys():
-        return _m2m_clients[user.id]
+def get_user_profile(user_id):
+    if user_id in _m2m_clients.keys():
+        return _m2m_clients[user_id]
     global management_api_token
     if management_api_token is None:
         get_management_api_token()
     try:
-        return _get_user_profile(user)
+        return _get_user_profile(user_id)
     except Auth0Error as error:
         if error.status_code == 401:
             get_management_api_token()
-            return _get_user_profile(user)
+            return _get_user_profile(user_id)
         if error.status_code == 400:
             # this may be an M2M client
             raise
         else:
             raise
+
+
+@cache(namespace='userstub', ttl=86400, key=_key_func)
+def get_user_stub(user_id):
+    profile = get_user_profile(user_id)
+    return {
+        'name': profile['name'],
+        'nickname': profile['nickname'],
+        'picture': profile['picture'],
+        'user_id': profile['user_id'],
+    }
 
 
 def init():

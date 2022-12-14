@@ -24,13 +24,23 @@ get_provider_user_profile = AuthProvider.get_user_profile
 
 
 def get_user_profile(user):
+    if isinstance(user, AuthUserModel):
+        user = user.id
     profile = {}
     profile[provider_name] = get_provider_user_profile(user)
     return profile
 
 
+def get_user_stub(user):
+    if isinstance(user, AuthUserModel):
+        user = user.id
+    return AuthProvider.get_user_stub(user)
+
+
 def verify_user_registration(user):
-    return register_user(user.id, provider_name)
+    if isinstance(user, AuthUserModel):
+        user = user.id
+    return register_user(user, provider_name)
 
 
 def init():
