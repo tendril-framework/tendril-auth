@@ -63,7 +63,6 @@ def expand_user_stub(cls, v):
     return v
 
 
-
 def UserStubTMixin(inp='puid', out='user'):
     validators = {
         'expand_user_stub':
