@@ -53,8 +53,8 @@ def get_user_profile(user):
 class UserStubTModel(TendrilTBaseModel):
     name: str = Field(..., example="User Full Name")
     nickname: str = Field(..., example="nickname")
-    picture: HttpUrl = Field(...)
-    user_id: str = Field(...)
+    picture: HttpUrl = Field(..., example='https://s.gravatar.com/avatar/...')
+    user_id: str = Field(..., example='auth0|...')
 
 
 def expand_user_stub(cls, v):
