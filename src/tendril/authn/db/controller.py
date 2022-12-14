@@ -24,6 +24,11 @@ def get_user(puid, provider=None, session=None):
 
 
 @with_db
+def get_user_by_id(id, session=None):
+    return session.query(User).get(id)
+
+
+@with_db
 def get_provider(name, session=None):
     q = session.query(Provider).filter_by(name=name)
     return q.one()

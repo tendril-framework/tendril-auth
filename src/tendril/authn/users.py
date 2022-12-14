@@ -1,9 +1,19 @@
 
 
-from tendril.config import AUTH_PROVIDER
+from pydantic import Field
+from pydantic import BaseModel
+from pydantic import HttpUrl
+from pydantic import validator
+from pydantic import create_model
 
+from tendril.config import AUTH_PROVIDER
+from tendril.utils.pydantic import TendrilTBaseModel
+
+from .db.model import User
 from .db.controller import register_provider
 from .db.controller import register_user
+from .db.controller import get_user_by_id
+
 
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEBUG)
@@ -23,23 +33,60 @@ auth_spec = AuthProvider.auth_spec
 get_provider_user_profile = AuthProvider.get_user_profile
 
 
-def get_user_profile(user):
+def preprocess_user(user):
     if isinstance(user, AuthUserModel):
         user = user.id
+    elif isinstance(user, User):
+        user = user.id
+    elif isinstance(user, int):
+        user = get_user_by_id(user).puid
+    return user
+
+
+def get_user_profile(user):
+    user = preprocess_user(user)
     profile = {}
     profile[provider_name] = get_provider_user_profile(user)
     return profile
 
 
+class UserStubTModel(TendrilTBaseModel):
+    name: str = Field(..., example="User Full Name")
+    nickname: str = Field(..., example="nickname")
+    picture: HttpUrl = Field(...)
+    user_id: str = Field(...)
+
+
+def expand_user_stub(cls, v):
+    if isinstance(v, str):
+        return get_user_stub(v)
+    return v
+
+
+def UserStubTMixin(inp='puid', out='user'):
+    validators = {
+        'expand_user_stub':
+        validator('puid', pre=True)(expand_user_stub)
+    }
+    kwargs = {
+        inp : (UserStubTModel, Field(..., alias=out)),
+        '__base__': TendrilTBaseModel,
+        '__validators__': validators
+    }
+    _inner = create_model(
+        f'UserStubTModel_{inp}_{out}',
+        **kwargs
+    )
+    return _inner
+
+
 def get_user_stub(user):
-    if isinstance(user, AuthUserModel):
-        user = user.id
+    user = preprocess_user(user)
     return AuthProvider.get_user_stub(user)
 
 
 def verify_user_registration(user):
-    if isinstance(user, AuthUserModel):
-        user = user.id
+    user = preprocess_user(user)
     return register_user(user, provider_name)
 
 
