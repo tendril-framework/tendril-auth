@@ -17,9 +17,10 @@ def get_users(session=None):
 
 @with_db
 def get_user(puid, provider=None, session=None):
-    q = session.query(User).filter_by(puid=puid)
+    filters = [User.puid == puid]
     if provider:
-        q.filter_by(provider=provider)
+        filters.append(User.provider == provider)
+    q = session.query(User).filter_by(*filters)
     return q.one()
 
 
