@@ -1,13 +1,8 @@
 
 
-from pydantic import Field
-from pydantic import BaseModel
-from pydantic import HttpUrl
-from pydantic import validator
-from pydantic import create_model
-
 from tendril.config import AUTH_PROVIDER
 from tendril.utils.pydantic import TendrilTBaseModel
+from tendril.authn.pydantic import UserStubTModel
 
 from .db.model import User
 from .db.controller import register_provider
@@ -50,34 +45,10 @@ def get_user_profile(user):
     return profile
 
 
-class UserStubTModel(TendrilTBaseModel):
-    name: str = Field(..., example="User Full Name")
-    nickname: str = Field(..., example="nickname")
-    picture: HttpUrl = Field(..., example='https://s.gravatar.com/avatar/...')
-    user_id: str = Field(..., example='auth0|...')
-
-
 def expand_user_stub(cls, v):
     if isinstance(v, str):
         return get_user_stub(v)
     return v
-
-
-def UserStubTMixin(inp='puid', out='user'):
-    validators = {
-        'expand_user_stub':
-        validator('puid', pre=True)(expand_user_stub)
-    }
-    kwargs = {
-        inp : (UserStubTModel, Field(..., alias=out)),
-        '__base__': TendrilTBaseModel,
-        '__validators__': validators
-    }
-    _inner = create_model(
-        f'UserStubTModel_{inp}_{out}',
-        **kwargs
-    )
-    return _inner
 
 
 def get_user_stub(user):
