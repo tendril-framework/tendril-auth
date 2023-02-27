@@ -28,6 +28,12 @@ config_elements_auth0 = [
         "Auth0 Audience"
     ),
     ConfigOption(
+        'AUTH0_AUDIENCE_ID',
+        'None',
+        'Auth0 Resource ID for the Auth0 Audience '
+        'provided by the application.'
+    ),
+    ConfigOption(
         'AUTH0_NAMESPACE',
         "'https://tendril.link/schema/auth0'",
         "Auth0 Namespace for Token Contents"

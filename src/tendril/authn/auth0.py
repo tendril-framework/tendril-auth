@@ -75,6 +75,27 @@ def get_management_api_token():
     logger.info("Successfully received Management API token ending in {}".format(management_api_token[-5:]))
 
 
+def management_api(func):
+    def _wrapper(*args, **kwargs):
+        global management_api_token
+        if management_api_token is None:
+            get_management_api_token()
+        try:
+            auth0 = Auth0PythonClient(AUTH0_DOMAIN, management_api_token)
+            return func(*args, auth0=auth0, **kwargs)
+        except Auth0Error as error:
+            if error.status_code == 401:
+                get_management_api_token()
+                auth0 = Auth0PythonClient(AUTH0_DOMAIN, management_api_token)
+                return func(*args, auth0=auth0, **kwargs)
+            if error.status_code == 400:
+                # this may be an M2M client
+                raise
+            else:
+                raise
+    return _wrapper
+
+
 def _get_user_profile(user_id):
     global management_api_token
     logger.debug("Attempting to fetch user information for {} from Auth0".format(user_id))
