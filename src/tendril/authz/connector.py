@@ -16,3 +16,6 @@ else:
 def get_current_scopes():
     return AuthProvider.get_current_scopes()
 
+
+def commit_scopes(scopes):
+    return AuthProvider.commit_scopes(scopes)

@@ -1,8 +1,8 @@
 
 
-import pprint
 import importlib
 
+from tendril.config import AUTH0_PATCH_SCOPES_ON_STARTUP
 from tendril.utils.versions import get_namespace_package_names
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEFAULT)
@@ -17,10 +17,7 @@ class ScopesManager(object):
 
     def _create_scopes(self):
         from tendril.authz import connector
-        current_scopes = connector.get_current_scopes()
-        print("HERE")
-        pprint.pprint(current_scopes)
-        pprint.pprint(self._scopes)
+        connector.commit_scopes(self._scopes)
 
     def _find_scopes(self):
         logger.debug("Loading authn scopes from {0}".format(self._prefix))
@@ -34,7 +31,8 @@ class ScopesManager(object):
 
     def finalize(self):
         self.finalized = True
-        self._create_scopes()
+        if AUTH0_PATCH_SCOPES_ON_STARTUP:
+            self._create_scopes()
 
     @property
     def scopes(self):

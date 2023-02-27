@@ -65,6 +65,11 @@ config_elements_auth0 = [
         "User Profile from Auth0, which would fail. Use of the management "
         "API along with exception handling would be a better approach "
         "to do this."
+    ),
+    ConfigOption(
+        'AUTH0_PATCH_SCOPES_ON_STARTUP',
+        'False',
+        "Whether to patch scopes on Auth0 at startup."
     )
 ]
 
