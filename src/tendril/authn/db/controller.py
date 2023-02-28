@@ -20,7 +20,7 @@ def get_user(puid, provider=None, session=None):
     filters = [User.puid == puid]
     if provider:
         filters.append(User.provider == provider)
-    q = session.query(User).filter_by(*filters)
+    q = session.query(User).filter(*filters)
     return q.one()
 
 
@@ -87,6 +87,10 @@ def register_user(puid, provider, must_create=False, session=None):
 def preprocess_user(user, provider=None, session=None):
     if user is None:
         raise AttributeError("user cannot be None")
+    if hasattr(user, 'id'):
+        # TODO This is a somewhat special case to strip down Auth0User
+        #      instances. A more generic approachmay be useful in the future.
+        user = user.id
     if isinstance(user, int):
         user_id = user
     elif isinstance(user, User):
