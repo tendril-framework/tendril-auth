@@ -71,6 +71,7 @@ def register_user(puid, provider, must_create=False, session=None):
     except NoResultFound:
         logger.info("Registering user '{}' from provider '{}'"
                     "".format(puid, provider.name))
+        first_login = True
         user = User(puid=puid, provider=provider, provider_id=provider.id)
     else:
         if must_create:
@@ -79,8 +80,9 @@ def register_user(puid, provider, must_create=False, session=None):
             logger.info("Using existing user '{}' for {} user '{}'"
                         "".format(existing.id, provider.name, puid))
             user = existing
+            first_login = False
     session.add(user)
-    return user
+    return user, first_login
 
 
 @with_db

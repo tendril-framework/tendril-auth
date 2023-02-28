@@ -57,8 +57,12 @@ def get_user_stub(user):
 
 
 def verify_user_registration(user):
-    user = preprocess_user(user)
-    return register_user(user, provider_name)
+    user_id = preprocess_user(user)
+    user, first_login = register_user(user_id, provider_name)
+    if first_login:
+        from tendril.authz.connector import add_user_scopes
+        from tendril.authz.scopes import default_user_scopes
+        add_user_scopes(user.puid, default_user_scopes)
 
 
 def init():

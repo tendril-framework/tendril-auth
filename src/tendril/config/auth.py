@@ -28,6 +28,12 @@ config_elements_auth0 = [
         "Auth0 Audience"
     ),
     ConfigOption(
+        'AUTH0_AUDIENCE_ID',
+        'None',
+        'Auth0 Resource ID for the Auth0 Audience '
+        'provided by the application.'
+    ),
+    ConfigOption(
         'AUTH0_NAMESPACE',
         "'https://tendril.link/schema/auth0'",
         "Auth0 Namespace for Token Contents"
@@ -59,6 +65,11 @@ config_elements_auth0 = [
         "User Profile from Auth0, which would fail. Use of the management "
         "API along with exception handling would be a better approach "
         "to do this."
+    ),
+    ConfigOption(
+        'AUTH0_PATCH_SCOPES_ON_STARTUP',
+        'False',
+        "Whether to patch scopes on Auth0 at startup."
     )
 ]
 
