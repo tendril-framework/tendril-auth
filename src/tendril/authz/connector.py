@@ -19,3 +19,15 @@ def get_current_scopes():
 
 def commit_scopes(scopes):
     return AuthProvider.commit_scopes(scopes)
+
+
+def get_user_scopes(user_id):
+    return AuthProvider.get_user_scopes(user_id)
+
+
+def add_user_scopes(user_id, scopes):
+    return AuthProvider.add_user_scopes(user_id, scopes)
+
+
+def remove_user_scopes(user_id, scopes):
+    return AuthProvider.remove_user_scopes(user_id, scopes)

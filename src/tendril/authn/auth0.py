@@ -96,10 +96,9 @@ def management_api(func):
     return _wrapper
 
 
-def _get_user_profile(user_id):
-    global management_api_token
+@management_api
+def get_user_object(user_id, auth0=None):
     logger.debug("Attempting to fetch user information for {} from Auth0".format(user_id))
-    auth0 = Auth0PythonClient(AUTH0_DOMAIN, management_api_token)
     user_profile = auth0.users.get(user_id)
     logger.info("Got user details for {} from Auth0 Management API".format(user_id))
     return user_profile
@@ -120,11 +119,11 @@ def get_user_profile(user_id):
     if management_api_token is None:
         get_management_api_token()
     try:
-        return _get_user_profile(user_id)
+        return get_user_object(user_id)
     except Auth0Error as error:
         if error.status_code == 401:
             get_management_api_token()
-            return _get_user_profile(user_id)
+            return get_user_object(user_id)
         if error.status_code == 400:
             # this may be an M2M client
             raise

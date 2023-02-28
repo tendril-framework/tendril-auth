@@ -12,6 +12,7 @@ class ScopesManager(object):
     def __init__(self, prefix):
         self._prefix = prefix
         self._scopes = {}
+        self._default_scopes = []
         self._find_scopes()
         self.finalized = False
 
@@ -28,6 +29,8 @@ class ScopesManager(object):
             m = importlib.import_module(m_name)
             logger.debug("Loading scopes from {0}".format(m_name))
             self._scopes.update(m.scopes)
+            if hasattr(m, 'default_scopes'):
+                self._default_scopes.extend(m.default_scopes)
 
     def finalize(self):
         self.finalized = True
@@ -37,3 +40,7 @@ class ScopesManager(object):
     @property
     def scopes(self):
         return self._scopes
+
+    @property
+    def default_user_scopes(self):
+        return self._default_scopes
