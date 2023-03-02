@@ -1,6 +1,5 @@
 
 
-
 from pydantic import Field
 from pydantic import HttpUrl
 from pydantic import validator
