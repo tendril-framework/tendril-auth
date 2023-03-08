@@ -34,7 +34,7 @@ core_dependencies = [
     'tendril-config',
     'tendril-caching',
     'tendril-utils-db',
-    'auth0-python',
+    'auth0-python>=4.0',
 ]
 
 install_requires = core_dependencies + ['wheel']

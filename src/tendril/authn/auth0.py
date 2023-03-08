@@ -8,9 +8,9 @@ os.environ['AUTH0_RULE_NAMESPACE'] = AUTH0_NAMESPACE
 from fastapi import Security
 from fastapi_auth0 import Auth0, Auth0User
 
-from auth0.v3.exceptions import Auth0Error
-from auth0.v3.authentication import GetToken
-from auth0.v3.management import Auth0 as Auth0PythonClient
+from auth0.exceptions import Auth0Error
+from auth0.authentication import GetToken
+from auth0.management import Auth0 as Auth0PythonClient
 
 from tendril.authz import scopes
 
@@ -67,10 +67,9 @@ def get_management_api_token():
         AUTH0_DOMAIN, AUTH0_USER_MANAGEMENT_API_CLIENTID,
         AUTH0_USER_MANAGEMENT_API_CLIENTSECRET[-5:0])
     )
-    get_token = GetToken(AUTH0_DOMAIN)
-    token = get_token.client_credentials(AUTH0_USER_MANAGEMENT_API_CLIENTID,
-                                         AUTH0_USER_MANAGEMENT_API_CLIENTSECRET,
-                                         'https://{}/api/v2/'.format(AUTH0_DOMAIN))
+    get_token = GetToken(AUTH0_DOMAIN, AUTH0_USER_MANAGEMENT_API_CLIENTID,
+                         client_secret=AUTH0_USER_MANAGEMENT_API_CLIENTSECRET)
+    token = get_token.client_credentials('https://{}/api/v2/'.format(AUTH0_DOMAIN))
     management_api_token = token['access_token']
     logger.info("Successfully received Management API token ending in {}".format(management_api_token[-5:]))
 
