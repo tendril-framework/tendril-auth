@@ -1,11 +1,17 @@
 
 
+from typing import Union
+
 from pydantic import Field
 from pydantic import HttpUrl
 from pydantic import validator
 from pydantic import create_model
 
 from tendril.utils.pydantic import TendrilTBaseModel
+
+
+class UserReferenceTModel(TendrilTBaseModel):
+    user_id: Union[int, str] = Field(...)
 
 
 class UserStubTModel(TendrilTBaseModel):
