@@ -10,8 +10,7 @@ from pydantic import create_model
 from tendril.utils.pydantic import TendrilTBaseModel
 
 
-class UserReferenceTModel(TendrilTBaseModel):
-    user_id: Union[int, str] = Field(...)
+UserReferenceTModel = Union[int, str]
 
 
 class UserStubTModel(TendrilTBaseModel):
