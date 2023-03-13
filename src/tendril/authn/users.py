@@ -1,5 +1,8 @@
 
 
+import string
+import secrets
+
 from tendril.config import AUTH_PROVIDER
 from tendril.utils.pydantic import TendrilTBaseModel
 from tendril.authn.pydantic import UserStubTModel
@@ -63,6 +66,38 @@ def verify_user_registration(user):
         from tendril.authz.connector import add_user_scopes
         from tendril.authz.scopes import default_user_scopes
         add_user_scopes(user.puid, default_user_scopes)
+
+
+def _generate_password(length=32):
+    alphabet = string.ascii_letters + string.digits
+    password = ''.join(secrets.choice(alphabet) for i in range(length))
+    return password
+
+
+def get_mechanized_user_email(username, prefix):
+    return AuthProvider.get_mechanized_user_email(username, prefix)
+
+
+def get_mechanized_user_username(username, prefix):
+    return AuthProvider.get_mechanized_user_username(username, prefix)
+
+
+def create_mechanized_user(username, prefix, password=None):
+    if not password:
+        password = _generate_password()
+    AuthProvider.create_mechanized_user(username, prefix, password)
+    return password
+
+
+def find_user_by_email(email, mechanized=True):
+    return AuthProvider.find_user_by_email(email, mechanized=mechanized)
+
+
+def set_user_password(user_id, password=None):
+    if not password:
+        password = _generate_password()
+    AuthProvider.set_user_password(user_id, password)
+    return password
 
 
 def init():

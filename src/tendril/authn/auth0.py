@@ -20,6 +20,8 @@ from tendril.config import AUTH0_USER_MANAGEMENT_API_CLIENTID
 from tendril.config import AUTH0_USER_MANAGEMENT_API_CLIENTSECRET
 from tendril.config import AUTH0_USERINFO_CACHING
 from tendril.config import AUTH0_M2M_CLIENTS
+from tendril.config import AUTH0_MECHANIZED_CONNECTION
+from tendril.config import AUTH0_MECHANIZED_USER_DOMAIN
 
 
 from tendril.utils import log
@@ -139,6 +141,49 @@ def get_user_stub(user_id):
         'picture': profile['picture'],
         'user_id': profile['user_id'],
     }
+
+
+@management_api
+def get_connections(auth0: Auth0PythonClient = None):
+    return auth0
+
+
+def get_mechanized_user_email(username, prefix):
+    return f'{username}@{prefix}.{AUTH0_MECHANIZED_USER_DOMAIN}'
+
+
+def get_mechanized_user_username(username, prefix):
+    return f'{prefix}-{username}'
+
+
+@management_api
+def create_mechanized_user(username, prefix, password=None,
+                           auth0: Auth0PythonClient = None):
+    if not AUTH0_MECHANIZED_CONNECTION:
+        raise (ValueError('AUTH0_MECHANIZED_CONNECTION needs to be '
+                          'provided to enable mechanized user creation'))
+    auth0.users.create(body={
+        'email': get_mechanized_user_email(username, prefix),
+        'name': f'{prefix} {username}',
+        'username': get_mechanized_user_username(username, prefix),
+        'connection': AUTH0_MECHANIZED_CONNECTION,
+        'password': password,
+    })
+
+
+@management_api
+def find_user_by_email(email, mechanized=True, auth0: Auth0PythonClient = None):
+    results = auth0.users_by_email.search_users_by_email(email, fields=['user_id', 'identities'])
+    if mechanized:
+        return [x['user_id'] for x in results if
+                x['identities'][0]['connection'] == AUTH0_MECHANIZED_CONNECTION]
+    else:
+        return [x['user_id'] for x in results]
+
+
+@management_api
+def set_user_password(user_id, password, auth0: Auth0PythonClient = None):
+    auth0.users.update(user_id, {'password': password})
 
 
 def init():

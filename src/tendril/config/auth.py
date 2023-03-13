@@ -70,6 +70,16 @@ config_elements_auth0 = [
         'AUTH0_PATCH_SCOPES_ON_STARTUP',
         'False',
         "Whether to patch scopes on Auth0 at startup."
+    ),
+    ConfigOption(
+        'AUTH0_MECHANIZED_CONNECTION',
+        'None',
+        'Auth0 Connection to use to store Mechanized Users'
+    ),
+    ConfigOption(
+        'AUTH0_MECHANIZED_USER_DOMAIN',
+        '"tendril.link"',
+        "Domain to use for mechanized user email addresses."
     )
 ]
 
