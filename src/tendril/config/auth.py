@@ -31,7 +31,8 @@ config_elements_auth0 = [
         'AUTH0_AUDIENCE_ID',
         'None',
         'Auth0 Resource ID for the Auth0 Audience '
-        'provided by the application.'
+        'provided by the application.',
+        masked=True
     ),
     ConfigOption(
         'AUTH0_NAMESPACE',
@@ -42,13 +43,15 @@ config_elements_auth0 = [
         'AUTH0_USER_MANAGEMENT_API_CLIENTID',
         "None",
         "Client ID for interaction with the Auth0 Management API. "
-        "Required for User database integration."
+        "Required for User database integration.",
+        masked=True
     ),
     ConfigOption(
         'AUTH0_USER_MANAGEMENT_API_CLIENTSECRET',
         "None",
         "Client Secret for interaction with the Auth0 Management API. "
-        "Required for User database integration."
+        "Required for User database integration.",
+        masked=True
     ),
     ConfigOption(
         'AUTH0_USERINFO_CACHING',
