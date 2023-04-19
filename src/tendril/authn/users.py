@@ -48,7 +48,7 @@ def get_user_profile(user):
     return profile
 
 
-def expand_user_stub(cls, v):
+def expand_user_stub(v, **kwargs):
     if isinstance(v, str):
         return get_user_stub(v)
     return v
