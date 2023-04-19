@@ -1,6 +1,7 @@
 
 
 from typing import Union
+from typing import Optional
 
 from pydantic import Field
 from pydantic import HttpUrl
@@ -33,7 +34,7 @@ def UserStubTMixin(inp='puid', out='user'):
         validator('puid', pre=True)(_expand_user_stub)
     }
     kwargs = {
-        inp : (UserStubTModel, Field(..., alias=out)),
+        inp: (Optional[UserStubTModel], Field(None, alias=out)),
         '__base__': TendrilTBaseModel,
         '__validators__': validators
     }
