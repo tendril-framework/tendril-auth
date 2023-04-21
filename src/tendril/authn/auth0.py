@@ -135,6 +135,8 @@ def get_user_profile(user_id):
 @cache(namespace='userstub', ttl=86400, key=_key_func)
 def get_user_stub(user_id):
     profile = get_user_profile(user_id)
+    if 'description' in profile.keys():
+        return profile
     return {
         'name': profile['name'],
         'nickname': profile['nickname'],

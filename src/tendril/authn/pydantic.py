@@ -21,6 +21,11 @@ class UserStubTModel(TendrilTBaseModel):
     user_id: str = Field(..., example='auth0|...')
 
 
+class M2MClientStubTModel(TendrilTBaseModel):
+    name: str = Field(..., example='some_name')
+    description: str = Field(..., example="Some Description")
+
+
 def _expand_user_stub(*args, **kwargs):
     # This strangeness is here to (hopefully)
     # break a circular import issue
@@ -34,7 +39,8 @@ def UserStubTMixin(inp='puid', out='user'):
         validator('puid', pre=True)(_expand_user_stub)
     }
     kwargs = {
-        inp: (Optional[UserStubTModel], Field(None, alias=out)),
+        inp: (Optional[Union[UserStubTModel, M2MClientStubTModel]],
+              Field(None, alias=out)),
         '__base__': TendrilTBaseModel,
         '__validators__': validators
     }
