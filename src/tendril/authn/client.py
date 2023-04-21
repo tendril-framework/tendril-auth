@@ -22,7 +22,7 @@ class IntramuralAuthenticator(Auth):
 
     async def async_auth_flow(self, request):
         if self._access_token:
-            request.headers["Authentication"] = "Bearer " + self._access_token
+            request.headers["Authorization"] = "Bearer " + self._access_token
             response = yield request
 
         if not self._access_token or response.status_code == 401:
