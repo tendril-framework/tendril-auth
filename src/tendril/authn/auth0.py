@@ -112,9 +112,15 @@ def _key_func(user_id):
     return user_id
 
 
+def is_m2m_client(user_id):
+    if user_id in _m2m_clients.keys():
+        return True
+    return False
+
+
 @cache(namespace='userinfo', ttl=86400, key=_key_func)
 def get_user_profile(user_id):
-    if user_id in _m2m_clients.keys():
+    if is_m2m_client(user_id):
         return _m2m_clients[user_id]
     global management_api_token
     if management_api_token is None:

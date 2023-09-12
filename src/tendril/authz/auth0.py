@@ -2,6 +2,7 @@
 
 from tendril.authn.auth0 import Auth0PythonClient
 from tendril.authn.auth0 import management_api
+from tendril.authn.auth0 import is_m2m_client
 from tendril.config import AUTH0_AUDIENCE_ID
 from tendril.config import AUTH0_AUDIENCE
 
@@ -33,12 +34,18 @@ def commit_scopes(scopes):
 
 @management_api
 def get_user_scopes(user_id, auth0: Auth0PythonClient):
+    if is_m2m_client(user_id):
+        logger.warn("Auth0 M2M client scopes must be manually managed.")
+        return None
     return [x['permission_name'] for x in
             auth0.users.list_permissions(user_id, per_page=100)['permissions']]
 
 
 @management_api
 def add_user_scopes(user_id, scopes, auth0: Auth0PythonClient):
+    if is_m2m_client(user_id):
+        logger.warn("Auth0 M2M client scopes must be manually managed.")
+        return None
     return auth0.users.add_permissions(
         user_id,
         [{"resource_server_identifier": AUTH0_AUDIENCE,
@@ -47,6 +54,9 @@ def add_user_scopes(user_id, scopes, auth0: Auth0PythonClient):
 
 @management_api
 def remove_user_scopes(user_id, scopes, auth0: Auth0PythonClient):
+    if is_m2m_client(user_id):
+        logger.warn("Auth0 M2M client scopes must be manually managed.")
+        return None
     return auth0.users.remove_permissions(
         user_id,
         [{"resource_server_identifier": AUTH0_AUDIENCE,
