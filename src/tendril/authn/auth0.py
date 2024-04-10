@@ -150,7 +150,6 @@ def get_user_stub(user_id):
         'user_id': profile['user_id'],
     }
 
-
 @management_api
 def get_connections(auth0: Auth0PythonClient = None):
     return auth0

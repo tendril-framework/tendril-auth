@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import BackgroundTasks
 
 from tendril.authn.users import authn_dependency
 from tendril.authn.users import AuthUserModel
@@ -18,8 +19,9 @@ user_services = APIRouter(prefix='/user',
 
 
 @user_services.get("/verify")
-async def verify(user: AuthUserModel = auth_spec()):
-    verify_user_registration(user)
+async def verify(background_tasks: BackgroundTasks,
+                 user: AuthUserModel = auth_spec()):
+    verify_user_registration(user, background_tasks=background_tasks)
     return {"message": "Logged in User Verified."}
 
 

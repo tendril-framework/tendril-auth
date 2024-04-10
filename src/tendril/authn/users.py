@@ -4,8 +4,7 @@ import string
 import secrets
 
 from tendril.config import AUTH_PROVIDER
-from tendril.utils.pydantic import TendrilTBaseModel
-from tendril.authn.pydantic import UserStubTModel
+from tendril.authz import domains
 
 from .db.model import User
 from .db.controller import register_provider
@@ -59,13 +58,21 @@ def get_user_stub(user):
     return AuthProvider.get_user_stub(user)
 
 
-def verify_user_registration(user):
+def get_user_email(user):
+    profile = get_user_profile(user)
+    try:
+        return profile['auth0']['email']
+    except KeyError:
+        raise AttributeError(f"Could not find an email for user {user}")
+
+
+def verify_user_registration(user, background_tasks=None):
     user_id = preprocess_user(user)
     user, first_login = register_user(user_id, provider_name)
-    if first_login:
-        from tendril.authz.connector import add_user_scopes
-        from tendril.authz.scopes import default_user_scopes
-        add_user_scopes(user.puid, default_user_scopes)
+    if background_tasks:
+        background_tasks.add_task(domains.upsert,
+                                  user=user,
+                                  first_login=first_login)
 
 
 def _generate_password(length=32):
