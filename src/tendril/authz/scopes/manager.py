@@ -35,6 +35,7 @@ class ScopesManager(object):
     def finalize(self):
         self.finalized = True
         if AUTH0_PATCH_SCOPES_ON_STARTUP:
+            # TODO This causes a circular import which needs to be fixed.
             self._create_scopes()
 
     @property
