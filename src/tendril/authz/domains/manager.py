@@ -2,6 +2,7 @@
 
 import importlib
 
+from tendril.jwt.signer import register_domain
 from tendril.utils.versions import get_namespace_package_names
 from tendril.utils import log
 logger = log.get_logger(__name__)
@@ -23,6 +24,9 @@ class AuthzDomainsManager(object):
             m = importlib.import_module(m_name)
             logger.info("Loading authz domains from {0}".format(m_name))
             self._domains.update(m.domains)
+            for domain, obj in m.domains.items():
+                if obj.jwt_spec:
+                    register_domain(domain, obj.jwt_spec)
 
     def finalize(self):
         self.finalized = True

@@ -83,6 +83,41 @@ config_elements_auth0 = [
         'AUTH0_MECHANIZED_USER_DOMAIN',
         '"tendril.link"',
         "Domain to use for mechanized user email addresses."
+    ),
+    ConfigOption(
+        'AUTH_JWKS_PATH',
+        'os.path.join(INSTANCE_ROOT, "jwt", "jwks.json")',
+        "Path to the jwks.json file to serve."
+    ),
+    ConfigOption(
+        'AUTH_JWT_PRIVATE_KEY',
+        'os.path.join(INSTANCE_ROOT, "jwt", "privateKey.pem")',
+        "Path to the private key to use to sign JWTs."
+    ),
+    ConfigOption(
+        'AUTH_JWT_PUBLIC_KEY',
+        'os.path.join(INSTANCE_ROOT, "jwt", "publicKey.pem")',
+        "Path to the public key to use to verify JWTs."
+    ),
+    ConfigOption(
+        'AUTH_JWT_ISSUER',
+        '"tendril.link"',
+        "Issuer to specify in the issued JWT claims."
+    ),
+    ConfigOption(
+        'AUTH_JWT_TTL',
+        '0',
+        "TTL in seconds before the issued JWT can be used."
+    ),
+    ConfigOption(
+        'AUTH_JWT_VALIDITY',
+        '3600',
+        "Duration in seconds before the issued JWT is expired."
+    ),
+    ConfigOption(
+        'AUTH_JWT_ALGORITHMS',
+        '["RS256"]',
+        "Algorithm to use to sign or verify JWTs. The first element used for encode."
     )
 ]
 
@@ -94,4 +129,3 @@ def load(manager):
     if manager.AUTH_PROVIDER == "auth0":
         manager.load_elements(config_elements_auth0,
                               doc="Auth0 Configuration")
-

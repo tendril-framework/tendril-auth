@@ -5,6 +5,8 @@ logger = get_logger(__name__)
 
 
 class AuthzDomainBase:
+    jwt_spec = None
+
     def get_user_profile(self, user):
         from tendril.authn.users import get_user_profile
         return get_user_profile(user)
