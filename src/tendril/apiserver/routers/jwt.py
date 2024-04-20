@@ -11,6 +11,7 @@ from tendril.authn.users import verify_user_registration
 from tendril.authn.users import get_user_profile
 from tendril.authn.users import get_user_stub
 
+from tendril.jwt.signer import enabled
 from tendril.jwt.signer import generate
 from tendril.config import AUTH_JWKS_PATH
 
@@ -30,6 +31,9 @@ async def get_domain_token(domain: str, user: AuthUserModel = auth_spec()):
     return {'jwt': generate(domain, user)}
 
 
-routers = [
-    jwt_services
-]
+if enabled:
+    routers = [
+        jwt_services
+    ]
+else:
+    routers = []

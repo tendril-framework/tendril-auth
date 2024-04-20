@@ -13,6 +13,11 @@ from .secrets import private_key
 from .secrets import kid
 
 
+enabled = False
+
+if private_key:
+    enabled = True
+
 _domains = {}
 
 def register_domain(domain, spec):
