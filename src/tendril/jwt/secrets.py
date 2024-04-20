@@ -4,6 +4,8 @@ import json
 from tendril.config import AUTH_JWKS_PATH
 from tendril.config import AUTH_JWT_PUBLIC_KEY
 from tendril.config import AUTH_JWT_PRIVATE_KEY
+from tendril.utils import log
+logger = log.get_logger(__name__)
 
 public_key = None
 private_key = None
@@ -27,4 +29,8 @@ def _init():
     with open(AUTH_JWT_PRIVATE_KEY, 'rb') as f:
         private_key = f.read()
 
-_init()
+try:
+    _init()
+except FileNotFoundError:
+    logger.warn("JWT Secrets not found. "
+                "JWTs cannot be generated in this component.")
