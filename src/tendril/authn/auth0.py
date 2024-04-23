@@ -150,9 +150,82 @@ def get_user_stub(user_id):
         'user_id': profile['user_id'],
     }
 
+
 @management_api
 def get_connections(auth0: Auth0PythonClient = None):
-    return auth0
+    return auth0.connections.all()
+
+
+def get_connection_id(name):
+    for connection in get_connections():
+        if connection['name'] == name:
+            return connection['id']
+
+
+def _extract_user_ids(user_list):
+    return [x['user_id'] for x in user_list]
+
+@management_api
+def search_users(q, auth0: Auth0PythonClient = None):
+    start = 0
+    limit = 25
+    total = None
+    got = 0
+    page = 0
+    result = []
+
+    response = auth0.users.list(page=0, per_page=limit, q=q)
+    total = response['total']
+
+    got = response['length']
+    result.extend(_extract_user_ids(response['users']))
+
+    while got < total:
+        page += 1
+        response = auth0.users.list(page=page, per_page=limit, q=q)
+        result.extend(_extract_user_ids(response['users']))
+        got += response['length']
+
+    return result
+
+
+def get_connection_users(connection_name):
+    return search_users(q=f'identities.connection:"{connection_name}"')
+
+
+@management_api
+def get_roles(auth0: Auth0PythonClient = None):
+    return auth0.roles.list()['roles']
+
+
+def get_role_id(name):
+    for role in get_roles():
+        if role['name'] == name:
+            return role['id']
+
+
+@management_api
+def assign_role_to_users(role, users, auth0: Auth0PythonClient=None):
+    per_page = 50
+    total_users = len(users)
+
+    for start_index in range(0, total_users, per_page):
+        end_index = min(start_index + per_page, total_users)
+        batch_users = users[start_index:end_index]
+        auth0.roles.add_users(role, batch_users)
+
+    # Handle any remaining users (if the total_users is not a multiple of per_page)
+    remaining_users = users[end_index:]
+    if remaining_users:
+        auth0.roles.add_users(role, remaining_users)
+
+
+@management_api
+def assign_role_to_user(role, user_id, auth0: Auth0PythonClient=None):
+    if not role:
+        return
+    role_id = get_role_id(role)
+    return auth0.users.add_roles(user_id, [role_id])
 
 
 def get_mechanized_user_email(username, prefix):
@@ -164,18 +237,23 @@ def get_mechanized_user_username(username, prefix):
 
 
 @management_api
-def create_mechanized_user(username, prefix, password=None,
+def create_mechanized_user(username, prefix,
+                           role=None, password=None,
                            auth0: Auth0PythonClient = None):
     if not AUTH0_MECHANIZED_CONNECTION:
         raise (ValueError('AUTH0_MECHANIZED_CONNECTION needs to be '
                           'provided to enable mechanized user creation'))
-    auth0.users.create(body={
+    response = auth0.users.create(body={
         'email': get_mechanized_user_email(username, prefix),
         'name': f'{prefix} {username}',
         'username': get_mechanized_user_username(username, prefix),
         'connection': AUTH0_MECHANIZED_CONNECTION,
         'password': password,
     })
+    user_id = response['user_id']
+    if role:
+        assign_role_to_user(role, user_id)
+    return response
 
 
 @management_api

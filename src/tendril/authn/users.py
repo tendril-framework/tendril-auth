@@ -89,10 +89,10 @@ def get_mechanized_user_username(username, prefix):
     return AuthProvider.get_mechanized_user_username(username, prefix)
 
 
-def create_mechanized_user(username, prefix, password=None):
+def create_mechanized_user(username, prefix, role=None, password=None):
     if not password:
         password = _generate_password()
-    AuthProvider.create_mechanized_user(username, prefix, password)
+    AuthProvider.create_mechanized_user(username, prefix, role=role, password=password)
     return password
 
 
