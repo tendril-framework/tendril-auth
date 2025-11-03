@@ -1,5 +1,6 @@
 
 
+from tendril.utils.fsutils import load_provider
 from tendril.config import AUTH_PROVIDER
 from tendril.authz import domains
 
@@ -12,18 +13,12 @@ from .db.controller import get_user_by_id
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEBUG)
 
-
-if AUTH_PROVIDER == "auth0":
-    logger.info("Using the auth0 auth provider")
-    from .providers import auth0 as AuthProvider
-    provider_name = 'auth0'
-if AUTH_PROVIDER == "stytch":
-    logger.info("Using the stytch auth provider")
-    from .providers import stytch as AuthProvider
-    provider_name = 'stytch'
-else:
-    raise ImportError("AUTH_PROVIDER {} not recognized".format(AUTH_PROVIDER))
-
+try:
+    AuthProvider = load_provider(AUTH_PROVIDER, "tendril.authn.providers")
+    provider_name = AUTH_PROVIDER
+except ImportError as e:
+    logger.critical(e)
+    raise
 
 authn_dependency = AuthProvider.authn_dependency
 AuthUserModel = AuthProvider.AuthUserModel

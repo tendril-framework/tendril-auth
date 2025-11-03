@@ -30,12 +30,9 @@ def read(fname):
 
 core_dependencies = [
     'fastapi',
-    'fastapi_auth0',
-    'stytch',
     'tendril-config',
     'tendril-caching',
     'tendril-utils-db',
-    'auth0-python>=4.0',
     'pyjwt',
     'cryptography',
     'validators',
