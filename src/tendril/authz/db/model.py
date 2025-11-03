@@ -50,8 +50,7 @@ class AuthScope(DeclBase, BaseMixin):
                          ForeignKey('AuthAudience.id', ondelete='CASCADE'))
     audience = relationship('AuthAudience', back_populates='scopes')
 
-    users = relationship('User', secondary=AuthUserScopes.__table__,
-                         back_populates='scopes')
+    users = relationship('User', secondary=AuthUserScopes.__table__)
     __table_args__ = (
         UniqueConstraint('name', 'audience_id'),
     )
