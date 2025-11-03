@@ -1,8 +1,5 @@
 
 
-import string
-import secrets
-
 from tendril.config import AUTH_PROVIDER
 from tendril.authz import domains
 
@@ -18,8 +15,12 @@ logger = log.get_logger(__name__, log.DEBUG)
 
 if AUTH_PROVIDER == "auth0":
     logger.info("Using the auth0 auth provider")
-    from . import auth0 as AuthProvider
+    from .providers import auth0 as AuthProvider
     provider_name = 'auth0'
+if AUTH_PROVIDER == "stytch":
+    logger.info("Using the stytch auth provider")
+    from .providers import stytch as AuthProvider
+    provider_name = 'stytch'
 else:
     raise ImportError("AUTH_PROVIDER {} not recognized".format(AUTH_PROVIDER))
 
@@ -61,7 +62,7 @@ def get_user_stub(user):
 def get_user_email(user):
     profile = get_user_profile(user)
     try:
-        return profile['auth0']['email']
+        return profile[provider_name]['email']
     except KeyError:
         raise AttributeError(f"Could not find an email for user {user}")
 
@@ -73,38 +74,6 @@ def verify_user_registration(user, background_tasks=None):
         background_tasks.add_task(domains.upsert,
                                   user=user,
                                   first_login=first_login)
-
-
-def _generate_password(length=32):
-    alphabet = string.ascii_letters + string.digits
-    password = ''.join(secrets.choice(alphabet) for i in range(length))
-    return password
-
-
-def get_mechanized_user_email(username, prefix):
-    return AuthProvider.get_mechanized_user_email(username, prefix)
-
-
-def get_mechanized_user_username(username, prefix):
-    return AuthProvider.get_mechanized_user_username(username, prefix)
-
-
-def create_mechanized_user(username, prefix, role=None, password=None):
-    if not password:
-        password = _generate_password()
-    AuthProvider.create_mechanized_user(username, prefix, role=role, password=password)
-    return password
-
-
-def find_user_by_email(email, mechanized=True):
-    return AuthProvider.find_user_by_email(email, mechanized=mechanized)
-
-
-def set_user_password(user_id, password=None):
-    if not password:
-        password = _generate_password()
-    AuthProvider.set_user_password(user_id, password)
-    return password
 
 
 def init():
