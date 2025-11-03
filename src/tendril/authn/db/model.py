@@ -22,9 +22,11 @@ class Provider(DeclBase, BaseMixin):
 
 class UserRoles(DeclBase, BaseMixin, TimestampMixin):
     user_id = Column(Integer(),
-                     ForeignKey('User.id', ondelete='CASCADE'))
+                     ForeignKey('User.id', ondelete='CASCADE'),
+                     index=True)
     role_id = Column(Integer(),
-                     ForeignKey('Role.id', ondelete='CASCADE'))
+                     ForeignKey('Role.id', ondelete='CASCADE'),
+                     index=True)
 
 
 class User(DeclBase, BaseMixin, TimestampMixin):
