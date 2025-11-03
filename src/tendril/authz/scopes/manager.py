@@ -2,7 +2,7 @@
 
 import importlib
 
-from tendril.config import AUTH0_PATCH_SCOPES_ON_STARTUP
+from tendril.config import AUTH_PATCH_SCOPES_ON_STARTUP
 from tendril.utils.versions import get_namespace_package_names
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEFAULT)
@@ -34,7 +34,7 @@ class ScopesManager(object):
 
     def finalize(self):
         self.finalized = True
-        if AUTH0_PATCH_SCOPES_ON_STARTUP:
+        if AUTH_PATCH_SCOPES_ON_STARTUP:
             # TODO This causes a circular import which needs to be fixed.
             self._create_scopes()
 
