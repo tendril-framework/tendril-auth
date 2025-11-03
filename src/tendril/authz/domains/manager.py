@@ -2,7 +2,7 @@
 
 import importlib
 
-from tendril.jwt.signer import register_domain
+from tendril.jwt.common import register_domain
 from tendril.utils.versions import get_namespace_package_names
 from tendril.utils import log
 logger = log.get_logger(__name__)
