@@ -11,9 +11,9 @@ from tendril.authn.users import verify_user_registration
 from tendril.authn.users import get_user_profile
 from tendril.authn.users import get_user_stub
 
-from tendril.jwt.signer import enabled
-from tendril.jwt.signer import generate
+from tendril.jwt.sign import generate_token_async
 from tendril.config import AUTH_JWKS_PATH
+from tendril.config import AUTH_JWT_API_ENABLED
 
 
 jwt_services = APIRouter(prefix='/jwt',
@@ -28,10 +28,11 @@ async def jwks():
 @jwt_services.get("/{domain}", dependencies=[Depends(authn_dependency),
                                                    auth_spec()])
 async def get_domain_token(domain: str, user: AuthUserModel = auth_spec()):
-    return {'jwt': generate(domain, user)}
+    token = await generate_token_async(user, domain)
+    return {'jwt': token}
 
 
-if enabled:
+if AUTH_JWT_API_ENABLED:
     routers = [
         jwt_services
     ]
