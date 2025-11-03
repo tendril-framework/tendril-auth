@@ -1,6 +1,6 @@
 
 Authentication and User Management Core for Tendril
-==========================================
+===================================================
 
 .. include:: ../README.rst
     :start-after: inclusion-marker-do-not-remove
