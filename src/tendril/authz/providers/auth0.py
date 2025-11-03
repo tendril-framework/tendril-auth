@@ -1,8 +1,8 @@
 
 
-from tendril.authn.auth0 import Auth0PythonClient
-from tendril.authn.auth0 import management_api
-from tendril.authn.auth0 import is_m2m_client
+from tendril.authn.providers.auth0 import Auth0PythonClient
+from tendril.authn.providers.auth0 import management_api
+from tendril.authn.providers.auth0 import is_m2m_client
 from tendril.config import AUTH0_AUDIENCE_ID
 from tendril.config import AUTH0_AUDIENCE
 
