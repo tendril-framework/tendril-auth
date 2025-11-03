@@ -21,8 +21,6 @@ from tendril.config import AUTH0_USER_MANAGEMENT_API_CLIENTSECRET
 from tendril.config import AUTH0_USERINFO_CACHING
 from tendril.config import AUTH0_M2M_CLIENTS
 from tendril.config import AUTH0_MECHANIZED_CONNECTION
-from tendril.config import AUTH0_MECHANIZED_USER_DOMAIN
-
 
 from tendril.utils import log
 logger = log.get_logger(__name__, log.DEBUG)
@@ -45,7 +43,6 @@ else:
 auth = Auth0(domain=AUTH0_DOMAIN,
              api_audience=AUTH0_AUDIENCE,
              scopes=scopes.scopes)
-
 
 authn_dependency = auth.implicit_scheme
 AuthUserModel = Auth0User
@@ -228,25 +225,19 @@ def assign_role_to_user(role, user_id, auth0: Auth0PythonClient=None):
     return auth0.users.add_roles(user_id, [role_id])
 
 
-def get_mechanized_user_email(username, prefix):
-    return f'{username}@{prefix}.{AUTH0_MECHANIZED_USER_DOMAIN}'
-
-
-def get_mechanized_user_username(username, prefix):
-    return f'{prefix}-{username}'
-
-
 @management_api
-def create_mechanized_user(username, prefix,
-                           role=None, password=None,
-                           auth0: Auth0PythonClient = None):
-    if not AUTH0_MECHANIZED_CONNECTION:
+def create_user(email=None, username=None, name=None, role=None, password=None,
+                auth0: Auth0PythonClient = None, mechanized=True):
+    if not mechanized:
+        raise (ValueError('auth0 provider currently supports the creation '
+                          'of mechanized users only.'))
+    if mechanized and not AUTH0_MECHANIZED_CONNECTION:
         raise (ValueError('AUTH0_MECHANIZED_CONNECTION needs to be '
                           'provided to enable mechanized user creation'))
     response = auth0.users.create(body={
-        'email': get_mechanized_user_email(username, prefix),
-        'name': f'{prefix} {username}',
-        'username': get_mechanized_user_username(username, prefix),
+        'email': email,
+        'name': name,
+        'username': username,
         'connection': AUTH0_MECHANIZED_CONNECTION,
         'password': password,
     })
@@ -268,6 +259,7 @@ def find_user_by_email(email, mechanized=True, auth0: Auth0PythonClient = None):
 
 @management_api
 def set_user_password(user_id, password, auth0: Auth0PythonClient = None):
+    # TODO This should only apply to mechanized users
     auth0.users.update(user_id, {'password': password})
 
 
