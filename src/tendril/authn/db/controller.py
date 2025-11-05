@@ -82,6 +82,7 @@ def register_user(puid, provider, must_create=False, session=None):
             user = existing
             first_login = False
     session.add(user)
+    first_login = True
     return user, first_login
 
 

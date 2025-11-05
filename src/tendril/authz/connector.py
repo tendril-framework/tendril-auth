@@ -13,21 +13,22 @@ except ImportError as e:
     logger.critical(e)
     raise
 
+
 def get_current_scopes():
-    return AuthZProvider.get_current_scopes()
+    return AuthzProvider.get_current_scopes()
 
 
 def commit_scopes(scopes):
-    return AuthZProvider.commit_scopes(scopes)
+    return AuthzProvider.commit_scopes(scopes)
 
 
 def get_user_scopes(user_id):
-    return AuthZProvider.get_user_scopes(user_id)
+    return AuthzProvider.get_user_scopes(user_id)
 
 
 def add_user_scopes(user_id, scopes):
-    return AuthZProvider.add_user_scopes(user_id, scopes)
+    return AuthzProvider.add_user_scopes(user_id, scopes)
 
 
 def remove_user_scopes(user_id, scopes):
-    return AuthZProvider.remove_user_scopes(user_id, scopes)
+    return AuthzProvider.remove_user_scopes(user_id, scopes)

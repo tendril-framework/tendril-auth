@@ -9,7 +9,7 @@ class ScopesAuthzDomain(AuthzDomainBase):
     async def upsert(self, user, first_login):
         from tendril.authz.connector import add_user_scopes
         from tendril.authz.scopes import default_user_scopes
-        if first_login:
+        if first_login and default_user_scopes:
             logger.debug(f"Writing user {user.puid} default scopes")
             add_user_scopes(user.puid, default_user_scopes)
 
